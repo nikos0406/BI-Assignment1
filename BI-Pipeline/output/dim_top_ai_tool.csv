@@ -1,8 +1,8 @@
-Tool_Name,Tool_ID
-Bard,1
-DALL-E,2
-Stable Diffusion,3
-Claude,4
-Midjourney,5
-ChatGPT,6
-Synthesia,7
+Tool_Name,Tool_ID,Tool_Type
+Bard,1,Text Generation
+DALL-E,2,Image Generation
+Stable Diffusion,3,Image Generation
+Claude,4,Text Generation
+Midjourney,5,Image Generation
+ChatGPT,6,Text Generation
+Synthesia,7,Video Generation

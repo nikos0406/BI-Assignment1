@@ -1,13 +1,13 @@
-Country,Country_ID
-Canada,1
-Germany,2
-Russia,3
-Brazil,4
-United Kingdom,5
-India,6
-Australia,7
-China,8
-United States,9
-Japan,10
-"Korea, South",11
-France,12
+Country,Country_ID,Region
+Australia,1,Oceania
+Brazil,2,South America
+Canada,3,North America
+China,4,Asia
+Germany,5,Europe
+India,6,Asia
+Japan,7,Asia
+Russia,8,Europe
+United Kingdom,9,Europe
+United States,10,North America
+South Korea,11,Asia
+France,12,Europe
