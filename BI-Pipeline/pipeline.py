@@ -1,7 +1,7 @@
 import pandas as pd
 
-energy_df = pd.read_csv('global_energy_consumption.csv')
-ai_content_df = pd.read_csv('Global_AI_Content_Impact_Dataset.csv')
+energy_df = pd.read_csv('./input/global_energy_consumption.csv')
+ai_content_df = pd.read_csv('./input/Global_AI_Content_Impact_Dataset.csv')
 
 # Data Filtering
 # Energy table contains duplicate entries (multiple surveys)
@@ -146,13 +146,17 @@ fact_final = fact_df[[
     'Country_Household_Energy_Use_pct', 'Country_Carbon_Emissions_Mt', 'Country_EnergyPriceIndex_USDkWh'
 ]]
 
-# Save outputs
-output_path = './output/'
-country_dim.to_csv(output_path + 'dim_country.csv', index=False)
-industry_dim.to_csv(output_path + 'dim_industry.csv', index=False)
-date_dim.to_csv(output_path + 'dim_date.csv', index=False)
-regulation_dim.to_csv(output_path + 'dim_regulation_status.csv', index=False)
-top_ai_tools_dim.to_csv(output_path + 'dim_top_ai_tool.csv', index=False)
-fact_final.to_csv(output_path + 'facts_table.csv', index=False)
+# Sort final facts table for better readability
+fact_final = fact_final.sort_values(by=['Country_ID', 'Date_ID', 'Industry_ID'])
+
+output_path = './output/ai_energy_data.xlsx'
+
+with pd.ExcelWriter(output_path, engine='xlsxwriter') as writer:
+    fact_final.to_excel(writer, sheet_name='fact_table', index=False)
+    country_dim.to_excel(writer, sheet_name='dim_country', index=False)
+    industry_dim.to_excel(writer, sheet_name='dim_industry', index=False)
+    date_dim.to_excel(writer, sheet_name='dim_date', index=False)
+    regulation_dim.to_excel(writer, sheet_name='dim_regulation_status', index=False)
+    top_ai_tools_dim.to_excel(writer, sheet_name='dim_top_ai_tool', index=False)
 
 print("Data pipeline completed")
