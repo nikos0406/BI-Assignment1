@@ -26,7 +26,17 @@ country_replacements = {
 ai_content_df['Country'] = ai_content_df['Country'].replace(country_replacements)
 energy_df['Country'] = energy_df['Country'].replace(country_replacements)
 
-#  Build dimension tables
+# Average duplicate rows in AI content data to ensure unique fact entries
+group_keys = ['Country', 'Year', 'Industry', 'Top AI Tools Used', 'Regulation Status']
+numeric_cols = ai_content_df.select_dtypes(include='number').columns
+
+ai_content_df = (
+    ai_content_df
+    .groupby(group_keys, as_index=False)[numeric_cols]
+    .mean()
+)
+
+# Build dimension tables
 # Country Dimension
 country_dim = pd.DataFrame(pd.concat([energy_df['Country'], ai_content_df['Country']]).unique(), columns=['Country'])
 country_dim['Country_ID'] = country_dim.index + 1
