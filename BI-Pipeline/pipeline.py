@@ -1,5 +1,6 @@
 import pandas as pd
 
+# Read datasets
 energy_df = pd.read_csv('./input/global_energy_consumption.csv')
 ai_content_df = pd.read_csv('./input/Global_AI_Content_Impact_Dataset.csv')
 
@@ -8,12 +9,12 @@ ai_content_df = pd.read_csv('./input/Global_AI_Content_Impact_Dataset.csv')
 # keep the row with Total Energy Consumption closest to the median for each Country-Year
 def select_best_energy_row(group):
     median_val = group['Total Energy Consumption (TWh)'].median()
-    idx = (group['Total Energy Consumption (TWh)'] - median_val).abs().idxmin()
+    idx = (group['Total Energy Consumption (TWh)'] - median_val).abs().idxmin() # closest to median
     return group.loc[idx]
 
 energy_df = (
     energy_df
-      .groupby(['Country', 'Year'], group_keys=False)
+      .groupby(['Country', 'Year'], group_keys=False) # group all surveys for a given (Country, Year)
       .apply(select_best_energy_row)
       .reset_index(drop=True)
 )
@@ -108,7 +109,7 @@ energy_fact['Country_ID'] = energy_fact['Country'].map(country_mapping)
 energy_fact['Date_ID'] = energy_fact['Year'].map(date_mapping)
 
 
-# Merge energy data into fact table
+# Merge energy data into fact table using a left join
 fact_df = fact_df.merge(
     energy_fact[[
         'Country_ID', 'Date_ID',
@@ -161,6 +162,7 @@ fact_final = fact_final.sort_values(by=['Country_ID', 'Date_ID', 'Industry_ID'])
 
 output_path = './output/ai_energy_data.xlsx'
 
+# Write all tables into an xlsx file
 with pd.ExcelWriter(output_path, engine='xlsxwriter') as writer:
     fact_final.to_excel(writer, sheet_name='fact_table', index=False)
     country_dim.to_excel(writer, sheet_name='dim_country', index=False)
@@ -169,4 +171,4 @@ with pd.ExcelWriter(output_path, engine='xlsxwriter') as writer:
     regulation_dim.to_excel(writer, sheet_name='dim_regulation_status', index=False)
     top_ai_tools_dim.to_excel(writer, sheet_name='dim_top_ai_tool', index=False)
 
-print("Data pipeline completed")
+print("Data pipeline completed. Stored result under:", output_path)
